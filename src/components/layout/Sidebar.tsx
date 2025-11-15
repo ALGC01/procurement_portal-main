@@ -56,10 +56,18 @@ export const Sidebar: React.FC = () => {
       <div className="p-4 border-b border-gray-200 dark:border-slate-700">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-700 dark:to-slate-600 p-4 rounded-2xl">
           <p className="text-sm text-gray-600 dark:text-gray-300">Logged in as</p>
-          <p className="text-gray-900 dark:text-white mt-1">{user?.name}</p>
-          <p className="text-sm text-blue-600 dark:text-blue-400 mt-1 capitalize">{user?.role.replace('_', ' ')}</p>
+
+          {/* UPDATED: changed name → username */}
+          <p className="text-gray-900 dark:text-white mt-1">{user?.username}</p>
+
+          <p className="text-sm text-blue-600 dark:text-blue-400 mt-1 capitalize">
+            {user?.role.replace('_', ' ')}
+          </p>
+
           {user?.department && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{user.department}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {user.department}
+            </p>
           )}
         </div>
       </div>

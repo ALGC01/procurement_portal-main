@@ -13,11 +13,11 @@ import { NewApprovals } from './pages/NewApprovals';
 import { Toaster } from './components/ui/sonner';
 import { getDB, getAllRequests, addRequest } from './lib/newDb';
 import { generateMockRequests } from './lib/newMockData';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';  // ✅ MAIN ProtectedRoute
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
-};
+
+// ❌ REMOVED your in-file ProtectedRoute (it was overriding the real one)
+
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -50,11 +50,51 @@ const AppRoutes: React.FC = () => {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/requests" element={<NewRequestList />} />
-        <Route path="/create" element={<NewRequestForm />} />
-        <Route path="/request/:id" element={<NewRequestDetail />} />
-        <Route path="/approvals" element={<NewApprovals />} />
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/requests" 
+          element={
+            <ProtectedRoute>
+              <NewRequestList />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/create" 
+          element={
+            <ProtectedRoute allowedRoles={['faculty', 'hod']}>
+              <NewRequestForm />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/request/:id" 
+          element={
+            <ProtectedRoute>
+              <NewRequestDetail />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/approvals" 
+          element={
+            <ProtectedRoute allowedRoles={['hod', 'so', 'po', 'principal', 'payment_officer', 'ao']}>
+              <NewApprovals />
+            </ProtectedRoute>
+          } 
+        />
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Layout>

@@ -14,20 +14,26 @@ const roles: { value: UserRole; label: string; description: string }[] = [
   { value: 'so', label: 'Store Officer', description: 'Review stock and inventory requirements' },
   { value: 'po', label: 'Purchase Officer', description: 'Review and process procurement orders' },
   { value: 'principal', label: 'Principal', description: 'Review and approve major purchases' },
-  { value: 'ao', label: 'Accountant Officer', description: 'Final financial review and completion' },
+  { value: 'ao', label: 'Accountant Officer', description: 'Make and Payemnt' },
   { value: 'admin', label: 'Admin', description: 'Full system access to all requests' },
 ];
 
 export const LoginPage: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [department, setDepartment] = useState('');
   const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   const handleLogin = () => {
-    if (selectedRole && name) {
-      login(selectedRole, name, selectedRole === 'faculty' || selectedRole === 'hod' ? department : undefined);
+    if (selectedRole && username && password) {
+      login(
+        selectedRole,
+        username,
+        password,
+        selectedRole === 'faculty' || selectedRole === 'hod' ? department : undefined
+      );
     }
   };
 
@@ -82,7 +88,11 @@ export const LoginPage: React.FC = () => {
                 <h3 className={selectedRole === role.value ? 'text-white' : 'text-gray-900 dark:text-white'}>
                   {role.label}
                 </h3>
-                <p className={`text-sm mt-2 ${selectedRole === role.value ? 'text-blue-100' : 'text-gray-600 dark:text-gray-400'}`}>
+                <p
+                  className={`text-sm mt-2 ${
+                    selectedRole === role.value ? 'text-blue-100' : 'text-gray-600 dark:text-gray-400'
+                  }`}
+                >
                   {role.description}
                 </p>
               </Card>
@@ -99,19 +109,37 @@ export const LoginPage: React.FC = () => {
             <Card className="p-8 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-gray-200 dark:border-slate-700">
               <div className="space-y-6">
                 <div>
-                  <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Full Name</Label>
+                  <Label htmlFor="username" className="text-gray-700 dark:text-gray-300">
+                    Username
+                  </Label>
                   <Input
-                    id="name"
-                    placeholder="Enter your full name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    id="username"
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="mt-2 rounded-xl border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="mt-2 rounded-xl border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
                   />
                 </div>
 
                 {(selectedRole === 'faculty' || selectedRole === 'hod') && (
                   <div>
-                    <Label htmlFor="department" className="text-gray-700 dark:text-gray-300">Department</Label>
+                    <Label htmlFor="department" className="text-gray-700 dark:text-gray-300">
+                      Department
+                    </Label>
                     <Input
                       id="department"
                       placeholder="Enter your department"
@@ -124,7 +152,11 @@ export const LoginPage: React.FC = () => {
 
                 <Button
                   onClick={handleLogin}
-                  disabled={!name || ((selectedRole === 'faculty' || selectedRole === 'hod') && !department)}
+                  disabled={
+                    !username ||
+                    !password ||
+                    ((selectedRole === 'faculty' || selectedRole === 'hod') && !department)
+                  }
                   className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white transition-all duration-200 hover:scale-105"
                 >
                   Login

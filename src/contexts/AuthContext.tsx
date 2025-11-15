@@ -1,17 +1,31 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type UserRole = 'faculty' | 'hod' | 'so' | 'po' | 'principal' | 'payment_officer' | 'ao' | 'admin';
+export type UserRole = 
+  'faculty' | 
+  'hod' | 
+  'so' | 
+  'po' | 
+  'principal' | 
+  'payment_officer' | 
+  'ao' | 
+  'admin';
 
 interface User {
   id: string;
-  name: string;
+  username: string;
+  password: string;
   role: UserRole;
   department?: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (role: UserRole, name: string, department?: string) => void;
+  login: (
+    role: UserRole,
+    username: string,
+    password: string,
+    department?: string
+  ) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -32,10 +46,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user]);
 
-  const login = (role: UserRole, name: string, department?: string) => {
+  const login = (
+    role: UserRole,
+    username: string,
+    password: string,
+    department?: string
+  ) => {
     const newUser: User = {
       id: Date.now().toString(),
-      name,
+      username,
+      password,
       role,
       department,
     };
@@ -47,12 +67,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      login, 
-      logout, 
-      isAuthenticated: !!user 
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        isAuthenticated: !!user
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
