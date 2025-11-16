@@ -10,13 +10,14 @@ import { NewRequestForm } from './components/procurement/NewRequestForm';
 import { NewRequestList } from './components/procurement/NewRequestList';
 import { NewRequestDetail } from './components/procurement/NewRequestDetail';
 import { NewApprovals } from './pages/NewApprovals';
+
+// ✅ FIXED — Correct import for default export
+import AdminDashboard from './pages/AdminDashboard';
+
 import { Toaster } from './components/ui/sonner';
 import { getDB, getAllRequests, addRequest } from './lib/newDb';
 import { generateMockRequests } from './lib/newMockData';
-import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';  // ✅ MAIN ProtectedRoute
-
-
-// ❌ REMOVED your in-file ProtectedRoute (it was overriding the real one)
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 
 const AppRoutes: React.FC = () => {
@@ -28,7 +29,6 @@ const AppRoutes: React.FC = () => {
         await getDB();
         const existingRequests = await getAllRequests();
         
-        // Add mock data only if database is empty
         if (existingRequests.length === 0) {
           const mockRequests = generateMockRequests();
           for (const request of mockRequests) {
@@ -50,56 +50,79 @@ const AppRoutes: React.FC = () => {
   return (
     <Layout>
       <Routes>
-        <Route 
-          path="/" 
+
+        <Route
+          path="/"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/requests" 
+        <Route
+          path="/requests"
           element={
             <ProtectedRoute>
               <NewRequestList />
             </ProtectedRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/create" 
+        <Route
+          path="/create"
           element={
-            <ProtectedRoute allowedRoles={['faculty', 'hod']}>
+            <ProtectedRoute allowedRoles={['faculty', 'hod', 'admin']}>
               <NewRequestForm />
             </ProtectedRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/request/:id" 
+        <Route
+          path="/request/:id"
           element={
             <ProtectedRoute>
               <NewRequestDetail />
             </ProtectedRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/approvals" 
+        <Route
+          path="/approvals"
           element={
-            <ProtectedRoute allowedRoles={['hod', 'so', 'po', 'principal', 'payment_officer', 'ao']}>
+            <ProtectedRoute
+              allowedRoles={[
+                'hod',
+                'so',
+                'po',
+                'principal',
+                'payment_officer',
+                'ao',
+                'admin'
+              ]}
+            >
               <NewApprovals />
             </ProtectedRoute>
-          } 
+          }
+        />
+
+        {/* ✅ ADMIN DASHBOARD */}
+        <Route
+          path="/admin"
+          element={
+              <ProtectedRoute roles={['Admin', 'Principal']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+          }
         />
 
         <Route path="*" element={<Navigate to="/" />} />
+
       </Routes>
     </Layout>
   );
 };
+
 
 export default function App() {
   return (
@@ -107,7 +130,7 @@ export default function App() {
       <AuthProvider>
         <Router>
           <AppRoutes />
-          <Toaster 
+          <Toaster
             position="top-right"
             toastOptions={{
               classNames: {

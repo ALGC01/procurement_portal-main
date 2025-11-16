@@ -9,7 +9,8 @@ import {
   CheckCircle, 
   ShoppingCart,
   LogOut,
-  LayoutDashboard 
+  LayoutDashboard,
+  Shield
 } from 'lucide-react';
 import { Button } from '../ui/button';
 
@@ -24,7 +25,20 @@ const navItems: NavItem[] = [
   { label: 'Dashboard', path: '/', icon: <LayoutDashboard className="h-5 w-5" /> },
   { label: 'My Requests', path: '/requests', icon: <FileText className="h-5 w-5" /> },
   { label: 'Create Request', path: '/create', icon: <PlusCircle className="h-5 w-5" />, roles: ['faculty', 'admin'] },
-  { label: 'Pending Approvals', path: '/approvals', icon: <CheckCircle className="h-5 w-5" />, roles: ['hod', 'so', 'po', 'principal', 'payment_officer', 'ao', 'admin'] },
+  { 
+    label: 'Pending Approvals', 
+    path: '/approvals', 
+    icon: <CheckCircle className="h-5 w-5" />, 
+    roles: ['hod', 'so', 'po', 'principal', 'payment_officer', 'ao', 'admin'] 
+  },
+
+  // ✅ NEW: Admin Dashboard (ONLY admin will see this)
+  { 
+    label: 'Admin Dashboard', 
+    path: '/admin', 
+    icon: <Shield className="h-5 w-5" />,
+    roles: ['admin'] 
+  },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -57,7 +71,6 @@ export const Sidebar: React.FC = () => {
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-700 dark:to-slate-600 p-4 rounded-2xl">
           <p className="text-sm text-gray-600 dark:text-gray-300">Logged in as</p>
 
-          {/* UPDATED: changed name → username */}
           <p className="text-gray-900 dark:text-white mt-1">{user?.username}</p>
 
           <p className="text-sm text-blue-600 dark:text-blue-400 mt-1 capitalize">
